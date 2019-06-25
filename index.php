@@ -42,33 +42,22 @@ $app->post('/', function ($request, $response)
 	// init bot
 	$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
 	$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $_ENV['CHANNEL_SECRET']]);
-	$data = json_decode($body, true);
-	foreach ($data['events'] as $event)
-	{
-		$userMessage = $event['message']['text'];
-		if(strtolower($userMessage) == 'halo')
-		{
-			$message = "Halo juga";
-            $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
-			$result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
-			return $result->getHTTPStatus() . ' ' . $result->getRawBody();
-		
-		}
-	}
-	
-
-});
-
-// $app->get('/push/{to}/{message}', function ($request, $response, $args)
-// {
-// 	$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
-// 	$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $_ENV['CHANNEL_SECRET']]);
-
-// 	$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($args['message']);
-// 	$result = $bot->pushMessage($args['to'], $textMessageBuilder);
-
-// 	return $result->getHTTPStatus() . ' ' . $result->getRawBody();
-// });
-
-/* JUST RUN IT */
+	$events = json_decode($content, true);
+if(!is_null($events)){
+    // ถ้ามีค่า สร้างตัวแปรเก็บ replyToken ไว้ใช้งาน
+    $replyToken = $events['events'][0]['replyToken'];
+}
+// ส่วนของคำสั่งจัดเตียมรูปแบบข้อความสำหรับส่ง
+$textMessageBuilder = new TextMessageBuilder(json_encode($events));
+ 
+//l ส่วนของคำสั่งตอบกลับข้อความ
+$response = $bot->replyMessage($replyToken,$textMessageBuilder);
+if ($response->isSucceeded()) {
+    echo 'Succeeded!';
+    return;
+}
+ 
+// Failed
+echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
+?>
 $app->run();
