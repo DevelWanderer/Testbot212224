@@ -5,7 +5,6 @@ require __DIR__ . '/vendor/autoload.php';
 
 use \LINE\LINEBot\SignatureValidator as SignatureValidator;
 
-
 // load config
 $dotenv = new Dotenv\Dotenv(__DIR__);
 $dotenv->load();
@@ -43,8 +42,8 @@ $app->post('/', function ($request, $response)
 	// init bot
 	$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
 	$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $_ENV['CHANNEL_SECRET']]);
-	$events = json_decode($content, true);
-		foreach ($data['events'] as $event)
+	$data = json_decode($body, true);
+	foreach ($data['events'] as $event)
 	{
 		$userMessage = $event['message']['text'];
 		if(strtolower($userMessage) == 'halo')
@@ -60,4 +59,16 @@ $app->post('/', function ($request, $response)
 
 });
 
+// $app->get('/push/{to}/{message}', function ($request, $response, $args)
+// {
+// 	$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
+// 	$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $_ENV['CHANNEL_SECRET']]);
+
+// 	$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($args['message']);
+// 	$result = $bot->pushMessage($args['to'], $textMessageBuilder);
+
+// 	return $result->getHTTPStatus() . ' ' . $result->getRawBody();
+// });
+
+/* JUST RUN IT */
 $app->run();
