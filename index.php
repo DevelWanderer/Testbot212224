@@ -4,11 +4,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 
 use \LINE\LINEBot\SignatureValidator as SignatureValidator;
-use LINE\LINEBot;
-use LINE\LINEBot\HTTPClient;
-use LINE\LINEBot\HTTPClient\CurlHTTPClient;
-use LINE\LINEBot\MessageBuilder;
-use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
+
 
 // load config
 $dotenv = new Dotenv\Dotenv(__DIR__);
