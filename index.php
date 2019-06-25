@@ -4,6 +4,11 @@ require __DIR__ . '/vendor/autoload.php';
 
 
 use \LINE\LINEBot\SignatureValidator as SignatureValidator;
+use LINE\LINEBot;
+use LINE\LINEBot\HTTPClient;
+use LINE\LINEBot\HTTPClient\CurlHTTPClient;
+use LINE\LINEBot\MessageBuilder;
+use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 
 // load config
 $dotenv = new Dotenv\Dotenv(__DIR__);
@@ -43,19 +48,19 @@ $app->post('/', function ($request, $response)
 	$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
 	$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $_ENV['CHANNEL_SECRET']]);
 	$events = json_decode($content, true);
-if(!is_null($events)){
+	if(!is_null($events)){
     // ถ้ามีค่า สร้างตัวแปรเก็บ replyToken ไว้ใช้งาน
-    $replyToken = $events['events'][0]['replyToken'];
+   	 $replyToken = $events['events'][0]['replyToken'];
 }
 // ส่วนของคำสั่งจัดเตียมรูปแบบข้อความสำหรับส่ง
-$textMessageBuilder = new TextMessageBuilder(json_encode($events));
+	$textMessageBuilder = new TextMessageBuilder(json_encode($events));
  
 //l ส่วนของคำสั่งตอบกลับข้อความ
-$response = $bot->replyMessage($replyToken,$textMessageBuilder);
-if ($response->isSucceeded()) {
-    echo 'Succeeded!';
-    return;
-}
+	$response = $bot->replyMessage($replyToken,$textMessageBuilder);
+	if ($response->isSucceeded()) {
+    		echo 'Succeeded!';
+    		return;
+	}
  
 // Failed
 echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
